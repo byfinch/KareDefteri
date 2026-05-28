@@ -2,15 +2,20 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import styles from './Login.module.css'
 
+// Login sayfası, kullanıcıların e-posta ve şifre ile giriş yapmalarını sağlar.
 function Login() {
+  // Form verilerini ve hata mesajını yönetmek için state kullanıyoruz.
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
 
+  // Form gönderildiğinde çalışacak fonksiyon
   const handleSubmit = (e) => {
+    // Formun varsayılan gönderme davranışını engelliyoruz.
     e.preventDefault()
     setError('')
 
+    // Basit doğrulama: E-posta ve şifre alanlarının boş olup olmadığını kontrol ediyoruz.
     if (!email || !password) {
       setError('Lütfen tüm alanları doldurun.')
       return
@@ -19,6 +24,7 @@ function Login() {
     console.log('Giriş denemesi:', { email, password })
   }
 
+  // JSX ile kullanıcı arayüzünü oluşturuyoruz.
   return (
     <div className={styles.container}>
       <div className={styles.card}>
