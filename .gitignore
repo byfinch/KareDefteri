@@ -1,0 +1,23 @@
+# Dependencies
+**/node_modules/
+
+# Build çıktıları
+**/dist/
+**/build/
+
+# Editör/IDE
+.vscode/
+.idea/
+
+# Sistem dosyaları
+.DS_Store
+Thumbs.db
+
+# Env dosyaları
+.env
+.env.local
+.env.*.local
+
+# Loglar
+*.log
+npm-debug.log*
