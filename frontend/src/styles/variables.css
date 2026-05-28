@@ -1,0 +1,43 @@
+:root {
+  /* Renkler — Logo paleti: sıcak gradient (turuncu → pembe → mor) */
+  --color-primary: #ec4899;
+  --color-primary-dark: #be185d;
+  --color-secondary: #a855f7;
+  --color-accent: #fb923c;
+  --color-gradient: linear-gradient(135deg, #fb923c 0%, #ec4899 50%, #a855f7 100%);
+
+  --color-bg: #fdf8f7;
+  --color-surface: #ffffff;
+  --color-text: #1f1729;
+  --color-text-muted: #6b5876;
+  --color-border: #f1e4ec;
+
+  --color-error: #dc2626;
+  --color-error-bg: #fef2f2;
+  --color-success: #16a34a;
+
+  /* Tipografi */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Boşluklar */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+
+  /* Köşe yuvarlama */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  /* Gölgeler */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 40px rgba(236, 72, 153, 0.15);
+
+  /* Geçişler */
+  --transition: all 0.2s ease;
+}
