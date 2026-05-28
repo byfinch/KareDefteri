@@ -1,0 +1,342 @@
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md);
+}
+
+.author {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  text-decoration: none;
+  color: var(--color-text);
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: var(--color-gradient);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.username {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.date {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.imageWrapper {
+  width: 100%;
+  background: var(--color-bg);
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md);
+  border-top: 1px solid var(--color-border);
+}
+
+.reactions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.reactionButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.8rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: transparent;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  transition: var(--transition);
+}
+
+.icon {
+  font-size: 1rem;
+  line-height: 1;
+  display: inline-block;
+  transition: transform 0.15s ease;
+}
+
+.reactionButton:hover:not(:disabled) .icon {
+  transform: scale(1.15);
+}
+
+.reactionButton:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.likeActive {
+  background: rgba(236, 72, 153, 0.1);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.dislikeActive {
+  background: rgba(100, 116, 139, 0.12);
+  border-color: var(--color-text-muted);
+  color: var(--color-text);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.actionButton {
+  padding: 0.4rem 0.8rem;
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: var(--transition);
+  border-radius: var(--radius-sm);
+}
+
+.actionButton:hover {
+  background: var(--color-bg);
+  color: var(--color-error);
+}
+
+.reportContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.reportQuestion {
+  text-align: center;
+  color: var(--color-text);
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+}
+
+.reasonList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.reasonOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: 0.85rem 1rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  text-align: left;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.reasonOption:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  background: rgba(236, 72, 153, 0.025);
+  transform: translateY(-1px);
+}
+
+.reasonSelected {
+  border-color: var(--color-primary);
+  background: rgba(236, 72, 153, 0.06);
+  box-shadow: 0 4px 14px rgba(236, 72, 153, 0.12);
+}
+
+.reasonSelected:hover:not(:disabled) {
+  background: rgba(236, 72, 153, 0.08);
+}
+
+.reasonText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.reasonTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.3;
+}
+
+.reasonDescription {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  line-height: 1.3;
+}
+
+.radio {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  background: var(--color-surface);
+}
+
+.radioSelected {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+}
+
+.radioInner {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: white;
+  animation: scaleIn 0.15s ease;
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}
+
+.reportMessage {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  padding: 0.6rem;
+  background: var(--color-bg);
+  border-radius: var(--radius-sm);
+}
+
+.modalActions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: var(--space-sm);
+}
+
+.cancelButton {
+  flex: 1;
+  padding: 0.875rem;
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.cancelButton:hover:not(:disabled) {
+  background: var(--color-border);
+}
+
+.cancelButton:disabled {
+  opacity: 0.5;
+}
+
+.dangerSubmitButton {
+  flex: 1.2;
+  padding: 0.875rem;
+  background: var(--color-error);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: var(--transition);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+}
+
+.dangerSubmitButton:hover:not(:disabled) {
+  filter: brightness(0.95);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(220, 38, 38, 0.35);
+}
+
+.dangerSubmitButton:disabled {
+  opacity: 0.5;
+  box-shadow: none;
+}
+
+/* SİLME ONAY MODAL */
+.deleteContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  text-align: center;
+}
+
+.deleteIconWrap {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-full);
+  background: var(--color-error-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-sm);
+}
+
+.deleteIcon {
+  font-size: 1.75rem;
+}
+
+.deleteQuestion {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.deleteWarning {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-sm);
+}
+
+.deleteContent .modalActions {
+  width: 100%;
+}
