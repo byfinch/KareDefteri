@@ -1,17 +1,19 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../context/useAuth'
 import styles from './Register.module.css'
 
-// Register sayfası, kullanıcıların e-posta ve şifre ile giriş yapmalarını sağlar.
 function Register() {
-  // Form verilerini ve hata mesajını yönetmek için state kullanıyoruz.
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConfirm, setPasswordConfirm] = useState('')
   const [error, setError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
-  // Form doğrulama fonksiyonu
+  const { register } = useAuth()
+  const navigate = useNavigate()
+
   const validate = () => {
     if (!username || !email || !password || !passwordConfirm) {
       return 'Lütfen tüm alanları doldurun.'
@@ -30,23 +32,32 @@ function Register() {
     }
     return null
   }
-  
-  // Form gönderildiğinde çalışacak fonksiyon
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
-    
-    // Form doğrulamasını yapıyoruz ve hata varsa gösteriyoruz.
+
     const validationError = validate()
     if (validationError) {
       setError(validationError)
       return
     }
 
-    console.log('Kayıt denemesi:', { username, email, password })
+    setSubmitting(true)
+    try {
+      await register({ username, email, password })
+      // Kayıt başarılı → e-posta doğrulama sayfasına yönlendir
+      navigate('/verify-email', { state: { email } })
+    } catch (err) {
+      const message =
+        err.response?.data?.message ||
+        'Kayıt yapılamadı. Lütfen tekrar deneyin.'
+      setError(message)
+    } finally {
+      setSubmitting(false)
+    }
   }
 
-  // JSX ile kullanıcı arayüzünü oluşturuyoruz.
   return (
     <div className={styles.container}>
       <div className={styles.card}>
@@ -66,6 +77,7 @@ function Register() {
               onChange={(e) => setUsername(e.target.value)}
               placeholder="kullanici_adi"
               autoComplete="username"
+              disabled={submitting}
             />
           </div>
 
@@ -78,6 +90,7 @@ function Register() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="ornek@email.com"
               autoComplete="email"
+              disabled={submitting}
             />
           </div>
 
@@ -90,6 +103,7 @@ function Register() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="En az 6 karakter"
               autoComplete="new-password"
+              disabled={submitting}
             />
           </div>
 
@@ -102,13 +116,14 @@ function Register() {
               onChange={(e) => setPasswordConfirm(e.target.value)}
               placeholder="Şifreni tekrar gir"
               autoComplete="new-password"
+              disabled={submitting}
             />
           </div>
 
           {error && <p className={styles.error}>{error}</p>}
 
-          <button type="submit" className={styles.button}>
-            Kayıt Ol
+          <button type="submit" className={styles.button} disabled={submitting}>
+            {submitting ? 'Kayıt yapılıyor...' : 'Kayıt Ol'}
           </button>
         </form>
 
