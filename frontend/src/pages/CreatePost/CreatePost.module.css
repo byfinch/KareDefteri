@@ -1,0 +1,109 @@
+.container {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: var(--space-xl);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.uploadArea {
+  position: relative;
+}
+
+.uploadLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  min-height: 280px;
+  padding: var(--space-xl);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  color: var(--color-text-muted);
+  transition: var(--transition);
+  background: var(--color-bg);
+}
+
+.uploadLabel:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: rgba(236, 72, 153, 0.04);
+}
+
+.uploadIcon {
+  font-size: 2.5rem;
+  font-weight: 300;
+}
+
+.uploadLabel small {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.fileInput {
+  display: none;
+}
+
+.preview {
+  width: 100%;
+  max-height: 480px;
+  object-fit: contain;
+  border-radius: var(--radius-lg);
+  background: var(--color-bg);
+}
+
+.changeButton {
+  margin-top: var(--space-sm);
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.changeButton:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.error {
+  color: var(--color-error);
+  font-size: 0.875rem;
+  padding: 0.75rem 1rem;
+  background: var(--color-error-bg);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--color-error);
+}
+
+.submitButton {
+  padding: 0.875rem;
+  background: var(--color-gradient);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 600;
+  transition: var(--transition);
+  box-shadow: 0 4px 14px rgba(236, 72, 153, 0.35);
+}
+
+.submitButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px rgba(236, 72, 153, 0.45);
+}
