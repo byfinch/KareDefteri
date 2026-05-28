@@ -22,14 +22,8 @@
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .header {
@@ -38,6 +32,7 @@
   align-items: center;
   gap: var(--space-sm);
   margin-bottom: var(--space-xl);
+  text-align: center;
 }
 
 .logo {
@@ -47,7 +42,7 @@
 }
 
 .title {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 700;
   background: var(--color-gradient);
   -webkit-background-clip: text;
@@ -77,25 +72,30 @@
   font-size: 0.875rem;
   color: var(--color-text);
   font-weight: 500;
+  text-align: center;
 }
 
-.field input {
-  padding: 0.75rem 1rem;
+.codeInput {
+  padding: 0.875rem 1rem;
   border: 1.5px solid var(--color-border);
   border-radius: var(--radius-md);
-  font-size: 0.95rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.5rem;
+  text-align: center;
   outline: none;
   transition: var(--transition);
   background: var(--color-surface);
 }
 
-.field input:focus {
+.codeInput:focus {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.12);
 }
 
-.field input::placeholder {
+.codeInput::placeholder {
   color: #cbd5e1;
+  letter-spacing: 0.5rem;
 }
 
 .error {
@@ -134,8 +134,18 @@
   box-shadow: 0 6px 22px rgba(236, 72, 153, 0.45);
 }
 
-.button:active {
-  transform: translateY(0);
+.linkButton {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: inherit;
+  padding: 0;
+  cursor: pointer;
+}
+
+.linkButton:hover {
+  text-decoration: underline;
 }
 
 .footer {
@@ -143,14 +153,4 @@
   margin-top: var(--space-xl);
   color: var(--color-text-muted);
   font-size: 0.9rem;
-}
-
-.footer a {
-  color: var(--color-primary);
-  font-weight: 600;
-  transition: var(--transition);
-}
-
-.footer a:hover {
-  text-decoration: underline;
 }
