@@ -1,10 +1,9 @@
 import { useState } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/useAuth'
-import styles from './Login.module.css'
+import styles from './AdminLogin.module.css'
 
-// Login sayfası, kullanıcıların e-posta ve şifre ile giriş yapmalarını sağlar.
-function Login() {
+function AdminLogin() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -12,12 +11,6 @@ function Login() {
 
   const { login, logout } = useAuth()
   const navigate = useNavigate()
-  const location = useLocation()
-
-  // Kullanıcı /'den geliyorsa oraya geri dönsün, yoksa anasayfaya
-  const from = location.state?.from?.pathname || '/'
-  // VerifyEmail veya başka bir sayfadan gelen başarı mesajı
-  const successMessage = location.state?.message
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -32,16 +25,16 @@ function Login() {
     try {
       const loggedInUser = await login(email, password)
 
-      // Admin bu sayfadan giriş yapmamalı — yöneticiler için /admin/login var
-      if (loggedInUser?.role === 'admin') {
+      // Yalnızca admin rolü kabul edilir
+      if (loggedInUser?.role !== 'admin') {
+        // Token saklandı ama bu yönetici girişi — temizle
         await logout()
-        setError('Yönetici hesapları bu sayfadan giriş yapamaz. /admin/login adresini kullanın.')
+        setError('Bu hesabın yönetici yetkisi yok.')
         return
       }
 
-      navigate(from, { replace: true })
+      navigate('/admin', { replace: true })
     } catch (err) {
-      // Backend'ten gelen hata mesajını göster
       const message =
         err.response?.data?.message ||
         'Giriş yapılamadı. Lütfen bilgilerini kontrol et.'
@@ -55,9 +48,11 @@ function Login() {
     <div className={styles.container}>
       <div className={styles.card}>
         <div className={styles.header}>
-          <img src="/logo.png" alt="KareDefteri" className={styles.logo} />
-          <h1 className={styles.title}>KareDefteri</h1>
-          <p className={styles.subtitle}>Hesabına giriş yap</p>
+          <div className={styles.iconBox}>
+            <img src="/logo.png" alt="KareDefteri" className={styles.logo} />
+          </div>
+          <h1 className={styles.title}>Yönetici Girişi</h1>
+          <p className={styles.subtitle}>KareDefteri yönetim paneli</p>
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
@@ -68,7 +63,7 @@ function Login() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="ornek@email.com"
+              placeholder="yonetici@karedefteri.com"
               autoComplete="email"
               disabled={submitting}
             />
@@ -87,20 +82,19 @@ function Login() {
             />
           </div>
 
-          {successMessage && !error && <p className={styles.success}>{successMessage}</p>}
           {error && <p className={styles.error}>{error}</p>}
 
           <button type="submit" className={styles.button} disabled={submitting}>
-            {submitting ? 'Giriş yapılıyor...' : 'Giriş Yap'}
+            {submitting ? 'Giriş yapılıyor...' : 'Panele Giriş Yap'}
           </button>
         </form>
 
         <p className={styles.footer}>
-          Hesabın yok mu? <Link to="/register">Kayıt Ol</Link>
+          Bu sayfa yalnızca yetkili yöneticiler içindir.
         </p>
       </div>
     </div>
   )
 }
 
-export default Login
+export default AdminLogin
