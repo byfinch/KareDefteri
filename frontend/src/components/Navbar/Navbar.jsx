@@ -8,6 +8,9 @@ function Navbar() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
 
+  // admin'in ekstra menüsü olacak
+  const isAdmin = user?.role === 'admin'
+
   const handleLogout = async () => {
     await logout()
     navigate('/login', { replace: true })
@@ -53,6 +56,18 @@ function Navbar() {
           >
             Profilim
           </NavLink>
+
+          {/* sadece admin görsün */}
+          {isAdmin && (
+            <NavLink
+              to="/admin"
+              className={({ isActive }) =>
+                isActive ? `${styles.link} ${styles.adminActive}` : `${styles.link} ${styles.adminLink}`
+              }
+            >
+              Yönetici
+            </NavLink>
+          )}
 
           <Notifications />
 

@@ -3,25 +3,27 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/useAuth'
 import styles from './Login.module.css'
 
-// Login sayfası, kullanıcıların e-posta ve şifre ile giriş yapmalarını sağlar.
 function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  // banlı kullanıcı bilgisi (varsa özel kart gösterilecek)
+  const [banInfo, setBanInfo] = useState(null)
   const [submitting, setSubmitting] = useState(false)
 
-  const { login, logout } = useAuth()
+  const { login } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
-  // Kullanıcı /'den geliyorsa oraya geri dönsün, yoksa anasayfaya
+  // kullanıcı korumalı bir sayfadan login'e atıldıysa oraya geri dönsün
   const from = location.state?.from?.pathname || '/'
-  // VerifyEmail veya başka bir sayfadan gelen başarı mesajı
+  // VerifyEmail'den gelen başarı mesajı (varsa)
   const successMessage = location.state?.message
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+    setBanInfo(null)
 
     if (!email || !password) {
       setError('Lütfen tüm alanları doldurun.')
@@ -32,22 +34,44 @@ function Login() {
     try {
       const loggedInUser = await login(email, password)
 
-      // Admin bu sayfadan giriş yapmamalı — yöneticiler için /admin/login var
-      if (loggedInUser?.role === 'admin') {
-        await logout()
-        setError('Yönetici hesapları bu sayfadan giriş yapamaz. /admin/login adresini kullanın.')
+      // admin ise direkt panele, normal kullanıcı ise geldiği yere
+      const target = loggedInUser?.role === 'admin' ? '/admin' : from
+      navigate(target, { replace: true })
+    } catch (err) {
+      const data = err.response?.data
+      const status = err.response?.status
+
+      // banlı kullanıcı (backend 403 + banned bilgisi dönerse)
+      if (status === 403 && (data?.banned || data?.code === 'ACCOUNT_BANNED')) {
+        setBanInfo({
+          permanent: data?.permanent || data?.banUntil === null,
+          until: data?.banUntil || null,
+          reason: data?.banReason || data?.reason || null,
+        })
         return
       }
 
-      navigate(from, { replace: true })
-    } catch (err) {
-      // Backend'ten gelen hata mesajını göster
+      // diğer tüm hatalar için backend mesajını veya genel hatayı göster
       const message =
-        err.response?.data?.message ||
+        data?.message ||
         'Giriş yapılamadı. Lütfen bilgilerini kontrol et.'
       setError(message)
     } finally {
       setSubmitting(false)
+    }
+  }
+
+  // ban tarihini güzel bir formata çevir (15 Haziran 2026 gibi)
+  const formatBanDate = (dateString) => {
+    if (!dateString) return ''
+    try {
+      return new Date(dateString).toLocaleDateString('tr-TR', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      })
+    } catch {
+      return dateString
     }
   }
 
@@ -59,6 +83,29 @@ function Login() {
           <h1 className={styles.title}>KareDefteri</h1>
           <p className={styles.subtitle}>Hesabına giriş yap</p>
         </div>
+
+        {/* banlı uyarısı */}
+        {banInfo && (
+          <div className={styles.banNotice}>
+            <div className={styles.banIconWrap}>
+              <span className={styles.banIcon}>⛔</span>
+            </div>
+            <h2 className={styles.banTitle}>Hesabınız Engellendi</h2>
+            <p className={styles.banMessage}>
+              {banInfo.permanent
+                ? 'Hesabınız kalıcı olarak engellenmiştir.'
+                : `Hesabınız ${formatBanDate(banInfo.until)} tarihine kadar engellenmiştir.`}
+            </p>
+            {banInfo.reason && (
+              <p className={styles.banReason}>
+                <strong>Sebep:</strong> {banInfo.reason}
+              </p>
+            )}
+            <p className={styles.banFooter}>
+              İtiraz için yönetimle iletişime geçin.
+            </p>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.field}>
@@ -87,8 +134,10 @@ function Login() {
             />
           </div>
 
-          {successMessage && !error && <p className={styles.success}>{successMessage}</p>}
-          {error && <p className={styles.error}>{error}</p>}
+          {successMessage && !error && !banInfo && (
+            <p className={styles.success}>{successMessage}</p>
+          )}
+          {error && !banInfo && <p className={styles.error}>{error}</p>}
 
           <button type="submit" className={styles.button} disabled={submitting}>
             {submitting ? 'Giriş yapılıyor...' : 'Giriş Yap'}

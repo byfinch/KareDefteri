@@ -8,21 +8,26 @@ import Spinner from '../../components/Spinner/Spinner'
 import styles from './Profile.module.css'
 
 function Profile() {
+  // URL'den kullanıcı adını al (/profile/melisa gibi)
   const { username } = useParams()
   const { user: currentUser } = useAuth()
+
   const [profile, setProfile] = useState(null)
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [followBusy, setFollowBusy] = useState(false)
 
+  // bu benim profilim mi? (öyleyse "Takip Et" butonu çıkmasın)
   const isOwnProfile = currentUser?.username === username
 
+  // username değiştiğinde profili ve gönderileri çek
   useEffect(() => {
     const fetchProfile = async () => {
       setLoading(true)
       setError('')
       try {
+        // ikisini paralel çekiyoruz, daha hızlı oluyor
         const [profileData, postsData] = await Promise.all([
           getUserProfile(username),
           getUserPosts(username),
@@ -38,11 +43,12 @@ function Profile() {
     fetchProfile()
   }, [username])
 
+  // takip et / takipten çık
   const handleFollowToggle = async () => {
     if (!profile || followBusy) return
     setFollowBusy(true)
     const wasFollowing = profile.isFollowing
-    // İyimser güncelleme
+    // önce UI'ı güncelle (kullanıcı hızlı tepki görsün), sonra backende yolla
     setProfile({
       ...profile,
       isFollowing: !wasFollowing,
@@ -55,7 +61,7 @@ function Profile() {
         await followUser(username)
       }
     } catch {
-      // Hata olursa geri al
+      // hata olursa eski hale dön
       setProfile({
         ...profile,
         isFollowing: wasFollowing,
@@ -66,6 +72,7 @@ function Profile() {
     }
   }
 
+  // gönderi silinince listeden kaldır
   const handlePostDelete = (postId) => {
     setPosts((prev) => prev.filter((p) => p.id !== postId))
   }
@@ -108,6 +115,7 @@ function Profile() {
               <span>takip</span>
             </a>
           </div>
+          {/* kendi profilimde takip butonu olmasın */}
           {!isOwnProfile && (
             <button
               onClick={handleFollowToggle}

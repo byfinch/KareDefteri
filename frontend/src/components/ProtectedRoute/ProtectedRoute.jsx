@@ -5,24 +5,19 @@ function ProtectedRoute({ children, requireAdmin = false }) {
   const { user, loading, isAuthenticated } = useAuth()
   const location = useLocation()
 
+  // context henüz localStorage'ı okumadıysa bekle
   if (loading) {
     return null
   }
 
-  // Giriş yapmamışsa → uygun login sayfasına gönder
+  // giriş yapmamış kullanıcıyı login'e yolla
   if (!isAuthenticated) {
-    const loginPath = requireAdmin ? '/admin/login' : '/login'
-    return <Navigate to={loginPath} state={{ from: location }} replace />
+    return <Navigate to="/login" state={{ from: location }} replace />
   }
 
-  // Admin rotası ama kullanıcı admin değilse → anasayfaya gönder
+  // admin sayfası ama kullanıcı admin değil → ana sayfaya
   if (requireAdmin && user.role !== 'admin') {
     return <Navigate to="/" replace />
-  }
-
-  // Normal kullanıcı rotası ama kullanıcı admin → admin paneline gönder
-  if (!requireAdmin && user.role === 'admin') {
-    return <Navigate to="/admin" replace />
   }
 
   return children

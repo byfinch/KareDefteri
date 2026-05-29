@@ -16,14 +16,14 @@ function Notifications() {
   const wrapperRef = useRef(null)
   const navigate = useNavigate()
 
-  // Sayfa açıldığında ve her 30 saniyede bir okunmamış sayısını çek
+  // okunmamış sayısını periyodik olarak güncelle (30 sn'de bir)
   useEffect(() => {
     const fetchCount = async () => {
       try {
         const data = await getUnreadCount()
         setUnread(data?.count || 0)
       } catch {
-        // sessiz geç
+        // hata olursa sus, kullanıcıyı rahatsız etmiyoruz
       }
     }
     fetchCount()
@@ -31,7 +31,7 @@ function Notifications() {
     return () => clearInterval(interval)
   }, [])
 
-  // Açıldığında bildirimleri çek
+  // dropdown açıldığında bildirimleri çek
   useEffect(() => {
     if (!open) return
     const fetch = async () => {
@@ -48,7 +48,7 @@ function Notifications() {
     fetch()
   }, [open])
 
-  // Dışarı tıklanınca kapat
+  // dışarı tıklayınca kapat
   useEffect(() => {
     const handleClick = (e) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
@@ -59,6 +59,7 @@ function Notifications() {
     return () => document.removeEventListener('mousedown', handleClick)
   }, [])
 
+  // bildirime tıklayınca: önce okundu işaretle, sonra ilgili sayfaya git
   const handleItemClick = async (notif) => {
     if (!notif.isRead) {
       try {
@@ -73,7 +74,7 @@ function Notifications() {
     }
     setOpen(false)
 
-    // Bildirim tipine göre yönlendirme
+    // bildirim türüne göre yönlendir
     if (notif.type === 'follow' && notif.fromUser?.username) {
       navigate(`/profile/${notif.fromUser.username}`)
     } else if (notif.type === 'like' || notif.type === 'dislike') {
@@ -83,6 +84,7 @@ function Notifications() {
     }
   }
 
+  // hepsini bir kerede okundu yap
   const handleMarkAllRead = async () => {
     try {
       await markAllAsRead()
@@ -93,6 +95,7 @@ function Notifications() {
     }
   }
 
+  // bildirim türüne göre kullanıcıya gösterilecek metin
   const formatMessage = (notif) => {
     const from = notif.fromUser?.username || 'Birisi'
     switch (notif.type) {

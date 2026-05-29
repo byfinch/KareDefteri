@@ -7,20 +7,23 @@ import styles from './CreatePost.module.css'
 function CreatePost() {
   const { user } = useAuth()
   const [file, setFile] = useState(null)
+  // önizleme için blob URL tutuyoruz
   const [preview, setPreview] = useState('')
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const navigate = useNavigate()
 
+  // dosya seçilince çalışır
   const handleFileChange = (e) => {
     const selected = e.target.files?.[0]
     if (!selected) return
 
+    // sadece görsel kabul ediyoruz
     if (!selected.type.startsWith('image/')) {
       setError('Lütfen bir görsel dosyası seç.')
       return
     }
-    // 10MB sınırı
+    // çok büyük dosya engelle (10MB sınır)
     if (selected.size > 10 * 1024 * 1024) {
       setError('Görsel boyutu 10MB altında olmalı.')
       return
@@ -28,6 +31,7 @@ function CreatePost() {
 
     setError('')
     setFile(selected)
+    // dosyadan geçici URL üret, kullanıcı önizleme görsün
     setPreview(URL.createObjectURL(selected))
   }
 
@@ -42,11 +46,12 @@ function CreatePost() {
 
     setSubmitting(true)
     try {
+      // dosya yüklemek için FormData kullanmamız lazım
       const formData = new FormData()
       formData.append('image', file)
       await createPost(formData)
-      // Paylaşım sonrası kendi profile gidiyor — yeni gönderi orada görünür
-      // (Ana sayfa sadece takip edilen kullanıcıların paylaşımlarını gösterir)
+      // paylaştıktan sonra kullanıcıyı kendi profiline gönderiyorum
+      // (ana sayfada kendi gönderimi göremem çünkü orada sadece takip ettiklerim var)
       navigate(`/profile/${user?.username || ''}`)
     } catch (err) {
       const msg = err.response?.data?.message || 'Gönderi paylaşılamadı.'

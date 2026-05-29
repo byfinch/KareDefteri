@@ -11,6 +11,7 @@ import {
 import Modal from '../Modal/Modal'
 import styles from './PostCard.module.css'
 
+// rapor sebepleri (kullanıcı bunlardan birini seçecek)
 const REPORT_REASONS = [
   {
     value: 'Uygunsuz İçerik',
@@ -32,39 +33,51 @@ const REPORT_REASONS = [
 
 function PostCard({ post, onDelete }) {
   const { user } = useAuth()
+
+  // beğeni/beğenmeme durumu ve sayılar
   const [reaction, setReaction] = useState(post.userReaction || null)
   const [likeCount, setLikeCount] = useState(post.likeCount || 0)
   const [dislikeCount, setDislikeCount] = useState(post.dislikeCount || 0)
 
+  // raporlama modal state'leri
   const [reportOpen, setReportOpen] = useState(false)
   const [selectedReason, setSelectedReason] = useState(null)
   const [reportMsg, setReportMsg] = useState('')
   const [reportSubmitting, setReportSubmitting] = useState(false)
 
+  // silme modal state'leri
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [deleteSubmitting, setDeleteSubmitting] = useState(false)
   const [deleteMsg, setDeleteMsg] = useState('')
 
+  // iki butona aynı anda spam tıklamayı engelle
   const [busy, setBusy] = useState(false)
 
+  // bu gönderi benim mi? (sil butonu sadece kendi gönderimde çıksın diye)
   const isOwner = user?.id === post.author?.id
 
+  // beğen butonuna tıklayınca
   const handleLike = async () => {
     if (busy) return
     setBusy(true)
+    // hata olursa eski hale dönmek için yedek alıyoruz
     const prev = { reaction, likeCount, dislikeCount }
     try {
       if (reaction === 'like') {
+        // zaten beğenmişti, geri alıyor
         setReaction(null)
         setLikeCount((c) => c - 1)
         await removeReaction(post.id)
       } else {
+        // yeni beğeni
         setReaction('like')
         setLikeCount((c) => c + 1)
+        // dislike vermişse onu da sayıyı azaltarak temizle
         if (reaction === 'dislike') setDislikeCount((c) => c - 1)
         await likePost(post.id)
       }
     } catch {
+      // backend hata verdiyse UI'ı eski haline çevir
       setReaction(prev.reaction)
       setLikeCount(prev.likeCount)
       setDislikeCount(prev.dislikeCount)
@@ -73,6 +86,7 @@ function PostCard({ post, onDelete }) {
     }
   }
 
+  // beğenme butonuna tıklayınca (handleLike'ın benzeri)
   const handleDislike = async () => {
     if (busy) return
     setBusy(true)
@@ -97,25 +111,29 @@ function PostCard({ post, onDelete }) {
     }
   }
 
+  // silme onay modalını kapat
   const closeDeleteModal = () => {
+    // silme işlemi sürerken kapanmasın
     if (deleteSubmitting) return
     setDeleteOpen(false)
     setDeleteMsg('')
   }
 
+  // silme işlemini başlat
   const handleDelete = async () => {
     setDeleteSubmitting(true)
     setDeleteMsg('')
     try {
       await deletePost(post.id)
+      // üst component'e haber ver (listeden çıkarsın)
       if (onDelete) onDelete(post.id)
-      // Sayfa otomatik güncellenir, modal yok artık
     } catch {
       setDeleteMsg('Gönderi silinemedi. Tekrar deneyin.')
       setDeleteSubmitting(false)
     }
   }
 
+  // rapor modalını kapat ve temizle
   const closeReportModal = () => {
     if (reportSubmitting) return
     setReportOpen(false)
@@ -123,6 +141,7 @@ function PostCard({ post, onDelete }) {
     setReportMsg('')
   }
 
+  // raporu gönder
   const handleReport = async () => {
     if (!selectedReason) {
       setReportMsg('Lütfen bir sebep seçin.')
@@ -132,6 +151,7 @@ function PostCard({ post, onDelete }) {
     try {
       await reportPost(post.id, selectedReason)
       setReportMsg('Rapor gönderildi. Teşekkürler.')
+      // başarı mesajı görünsün, sonra otomatik kapansın
       setTimeout(() => {
         closeReportModal()
       }, 1200)
@@ -181,6 +201,7 @@ function PostCard({ post, onDelete }) {
         </div>
 
         <div className={styles.actions}>
+          {/* gönderi sahibine sil, başkalarına raporla göster */}
           {isOwner ? (
             <button onClick={() => setDeleteOpen(true)} className={styles.actionButton}>
               Sil
@@ -193,7 +214,7 @@ function PostCard({ post, onDelete }) {
         </div>
       </footer>
 
-      {/* RAPORLAMA MODAL */}
+      {/* raporlama modalı */}
       <Modal open={reportOpen} onClose={closeReportModal} title="Gönderiyi Rapor Et">
         <div className={styles.reportContent}>
           <p className={styles.reportQuestion}>Bu gönderiyi neden raporluyorsunuz?</p>
@@ -247,7 +268,7 @@ function PostCard({ post, onDelete }) {
         </div>
       </Modal>
 
-      {/* SİLME ONAY MODAL */}
+      {/* silme onay modalı */}
       <Modal open={deleteOpen} onClose={closeDeleteModal} title="Gönderiyi Sil">
         <div className={styles.deleteContent}>
           <div className={styles.deleteIconWrap}>

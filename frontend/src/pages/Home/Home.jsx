@@ -10,6 +10,7 @@ function Home() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
+  // sayfa açıldığında takip edilenlerin gönderilerini çek
   useEffect(() => {
     const fetchFeed = async () => {
       try {
@@ -27,6 +28,7 @@ function Home() {
     fetchFeed()
   }, [])
 
+  // bir gönderi silinince listeden çıkar (PostCard üst component'e haber veriyor)
   const handleDelete = (postId) => {
     setPosts((prev) => prev.filter((p) => p.id !== postId))
   }
@@ -47,6 +49,7 @@ function Home() {
     )
   }
 
+  // hiç gönderi yoksa: ya takip ettiği yok ya takip ettikleri paylaşmamış
   if (posts.length === 0) {
     return (
       <div className={styles.empty}>

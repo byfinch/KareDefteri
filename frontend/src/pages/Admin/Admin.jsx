@@ -11,6 +11,7 @@ import Spinner from '../../components/Spinner/Spinner'
 import styles from './Admin.module.css'
 
 function Admin() {
+  // hangi sekme açık
   const [tab, setTab] = useState('stats')
 
   return (
@@ -49,6 +50,7 @@ function Admin() {
   )
 }
 
+// istatistikler sekmesi (genel sayılar + tarih dağılımı + coğrafi)
 function StatsTab() {
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -72,7 +74,8 @@ function StatsTab() {
   if (error) return <div className={styles.empty}>{error}</div>
   if (!stats) return <div className={styles.empty}>Veri bulunamadı.</div>
 
-  // Coğrafi dağılım için max değer (bar genişlikleri için)
+  // coğrafi dağılımı bar chart yapacağız
+  // en büyük değeri bulup diğerleri buna oranlanacak
   const countries = stats.geoDistribution || []
   const maxCountry = countries.reduce((m, c) => Math.max(m, c.count || 0), 0) || 1
 
@@ -159,6 +162,7 @@ function StatsTab() {
   )
 }
 
+// raporlar sekmesi: raporlanan gönderiler ve gerekçeleri
 function ReportsTab() {
   const [reports, setReports] = useState([])
   const [loading, setLoading] = useState(true)
@@ -178,7 +182,8 @@ function ReportsTab() {
     fetch()
   }, [])
 
-  // Aynı gönderiye gelen raporları grupla
+  // aynı gönderiye gelen raporları tek kartta toplayalım
+  // (örn. 3 farklı kişi aynı gönderiyi rapor ettiyse tek yerde gösterilsin)
   const groupedReports = (() => {
     const groups = new Map()
     reports.forEach((r) => {
@@ -195,14 +200,16 @@ function ReportsTab() {
     return Array.from(groups.values())
   })()
 
+  // bir gönderiye gelen tüm raporları aynı anda işle
   const handleResolveAll = async (postId, action) => {
     const group = groupedReports.find((g) => g.post?.id === postId)
     if (!group) return
     try {
-      // Her raporu tek tek işle
+      // her raporu paralel olarak backend'e bildir
       await Promise.all(
         group.reports.map((r) => resolveReport(r.id, action))
       )
+      // sonra listeden çıkar
       setReports((prev) => prev.filter((r) => r.post?.id !== postId))
     } catch {
       alert('İşlem başarısız.')
@@ -275,6 +282,7 @@ function ReportsTab() {
   )
 }
 
+// kullanıcılar sekmesi: ban/unban işlemleri
 function UsersTab() {
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
@@ -297,6 +305,7 @@ function UsersTab() {
   const handleBan = async (userId, duration) => {
     try {
       await banUser(userId, duration)
+      // UI'da banlı işaretle (verisi silinmiyor)
       setUsers((prev) =>
         prev.map((u) => (u.id === userId ? { ...u, isBanned: true } : u))
       )

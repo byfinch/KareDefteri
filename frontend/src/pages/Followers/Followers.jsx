@@ -6,6 +6,8 @@ import styles from './Followers.module.css'
 
 function Followers() {
   const { username } = useParams()
+  // hangi sekmedeyiz: takipçiler mi takip edilenler mi
+  // URL'de ?tab=followers ya da ?tab=following olarak tutuyoruz
   const [searchParams, setSearchParams] = useSearchParams()
   const tab = searchParams.get('tab') || 'followers'
 
@@ -13,6 +15,7 @@ function Followers() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
+  // sekme veya kullanıcı değişince listeyi yeniden çek
   useEffect(() => {
     const fetchUsers = async () => {
       setLoading(true)

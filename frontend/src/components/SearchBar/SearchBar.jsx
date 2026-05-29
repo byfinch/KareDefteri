@@ -11,7 +11,7 @@ function SearchBar() {
   const wrapperRef = useRef(null)
   const navigate = useNavigate()
 
-  // Debounced arama — kullanıcı yazmayı bıraktıktan 300ms sonra istek at
+  // her harfte istek atmamak için 300ms bekliyoruz (debounce)
   useEffect(() => {
     if (query.trim().length < 2) {
       setResults([])
@@ -31,7 +31,7 @@ function SearchBar() {
     return () => clearTimeout(timer)
   }, [query])
 
-  // Dışarı tıklanınca kapat
+  // dropdown dışına tıklayınca kapansın
   useEffect(() => {
     const handleClick = (e) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
@@ -42,6 +42,7 @@ function SearchBar() {
     return () => document.removeEventListener('mousedown', handleClick)
   }, [])
 
+  // bir kullanıcıya tıklayınca onun profiline git
   const handleSelect = (username) => {
     setQuery('')
     setResults([])

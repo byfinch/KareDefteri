@@ -11,8 +11,10 @@ function VerifyEmail() {
 
   const navigate = useNavigate()
   const location = useLocation()
+  // Register sayfasından gelirken state ile email yolladık, onu yakalıyoruz
   const email = location.state?.email
 
+  // kod gönder butonuna basınca
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
@@ -30,6 +32,7 @@ function VerifyEmail() {
     setSubmitting(true)
     try {
       await verifyEmail(code)
+      // başarılı: login sayfasına yönlendir ve başarı mesajı göster
       navigate('/login', {
         state: { message: 'E-posta doğrulandı! Giriş yapabilirsiniz.' },
       })
@@ -41,10 +44,12 @@ function VerifyEmail() {
     }
   }
 
+  // kod gelmediyse yeniden istemek için
   const handleResend = async () => {
     setError('')
     setMessage('')
 
+    // bilgi yoksa hangi adrese yollayacağımızı bilemeyiz
     if (!email) {
       setError('E-posta bilgisi bulunamadı. Tekrar kayıt olmanız gerekebilir.')
       return
@@ -79,6 +84,7 @@ function VerifyEmail() {
               id="code"
               type="text"
               value={code}
+              // sadece rakam ve max 6 hane kabul et
               onChange={(e) =>
                 setCode(e.target.value.replace(/\D/g, '').slice(0, 6))
               }

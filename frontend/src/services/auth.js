@@ -1,33 +1,32 @@
 import api from './api'
 
-// Kayıt
+// yeni kullanıcı kaydı
 export const registerUser = async (userData) => {
-  // userData: { username, email, password }
+  // userData içinde username, email, password var
   const response = await api.post('/auth/register', userData)
   return response.data
 }
 
-// Giriş
+// giriş yap
 export const loginUser = async (credentials) => {
-  // credentials: { email, password }
-  // Backend dönüşü: { token: "...", user: { id, username, email, role } }
+  // backend bize token ve user bilgilerini dönecek
   const response = await api.post('/auth/login', credentials)
   return response.data
 }
 
-// E-posta doğrulama
+// e-posta doğrulama (6 haneli kod)
 export const verifyEmail = async (code) => {
   const response = await api.post('/auth/verify-email', { code })
   return response.data
 }
 
-// Yeniden kod gönder
+// kod gelmezse yeniden iste
 export const resendVerificationCode = async (email) => {
   const response = await api.post('/auth/resend-code', { email })
   return response.data
 }
 
-// Çıkış (opsiyonel — backend session tutuyorsa)
+// çıkış (backend session tutuyorsa lazım)
 export const logoutUser = async () => {
   await api.post('/auth/logout')
 }

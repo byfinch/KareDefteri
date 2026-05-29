@@ -1,9 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute'
 import Layout from './components/Layout/Layout'
-import AdminLayout from './components/AdminLayout/AdminLayout'
 import Login from './pages/Login/Login'
-import AdminLogin from './pages/AdminLogin/AdminLogin'
 import Register from './pages/Register/Register'
 import VerifyEmail from './pages/VerifyEmail/VerifyEmail'
 import Home from './pages/Home/Home'
@@ -15,15 +13,12 @@ import Admin from './pages/Admin/Admin'
 function App() {
   return (
     <Routes>
-      {/* Public rotalar */}
+      {/* herkesin erişebileceği sayfalar */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/verify-email" element={<VerifyEmail />} />
 
-      {/* Admin girişi — ayrı sayfa */}
-      <Route path="/admin/login" element={<AdminLogin />} />
-
-      {/* Standart kullanıcı rotaları */}
+      {/* giriş yapmış kullanıcılar için sayfalar */}
       <Route
         element={
           <ProtectedRoute>
@@ -35,20 +30,19 @@ function App() {
         <Route path="/create" element={<CreatePost />} />
         <Route path="/profile/:username" element={<Profile />} />
         <Route path="/followers/:username" element={<Followers />} />
+
+        {/* admin sayfası — sadece admin rolüne erişim */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute requireAdmin>
+              <Admin />
+            </ProtectedRoute>
+          }
+        />
       </Route>
 
-      {/* Admin rotaları */}
-      <Route
-        element={
-          <ProtectedRoute requireAdmin>
-            <AdminLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route path="/admin" element={<Admin />} />
-      </Route>
-
-      {/* Tanımsız URL'leri anasayfaya yönlendir */}
+      {/* tanımsız URL'leri ana sayfaya yolla */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

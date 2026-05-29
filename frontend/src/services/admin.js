@@ -1,38 +1,37 @@
 import api from './api'
 
-// Raporlanan gönderileri listele
+// raporlanan gönderiler listesi
 export const getReportedPosts = async () => {
   const response = await api.get('/admin/reports')
   return response.data
 }
 
-// Raporu işle (görünürlüğü kısıtla / yok say)
+// raporu işle: gizle ya da yok say
 export const resolveReport = async (reportId, action) => {
-  // action: 'hide' | 'ignore'
+  // action: 'hide' veya 'ignore'
   const response = await api.post(`/admin/reports/${reportId}/resolve`, { action })
   return response.data
 }
 
-// Tüm kullanıcıları listele
+// bütün kullanıcılar
 export const getAllUsers = async () => {
   const response = await api.get('/admin/users')
   return response.data
 }
 
-// Kullanıcıyı banla (geçici veya kalıcı)
+// kullanıcıyı banla (gün sayısı ya da 'permanent')
 export const banUser = async (userId, duration) => {
-  // duration: 'permanent' veya gün sayısı (ör: 7)
   const response = await api.post(`/admin/users/${userId}/ban`, { duration })
   return response.data
 }
 
-// Banı kaldır
+// ban kaldır
 export const unbanUser = async (userId) => {
   const response = await api.delete(`/admin/users/${userId}/ban`)
   return response.data
 }
 
-// Sistem istatistikleri
+// genel istatistikler (kullanıcı, gönderi, coğrafi dağılım vs.)
 export const getStatistics = async () => {
   const response = await api.get('/admin/statistics')
   return response.data

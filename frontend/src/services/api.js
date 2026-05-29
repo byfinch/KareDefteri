@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-// Backend'in adresi. İlerde production'da değişecek, env değişkenine alacağız.
+// backend adresi (sonra .env'e taşıyabiliriz)
 const API_BASE_URL = 'http://localhost:3000/api'
 
 const api = axios.create({
@@ -11,7 +11,8 @@ const api = axios.create({
   },
 })
 
-// REQUEST INTERCEPTOR — token'ı otomatik ekle
+// her istek backende gitmeden önce buradan geçiyor
+// token varsa otomatik header'a ekleniyor
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token')
@@ -23,7 +24,8 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 )
 
-// RESPONSE INTERCEPTOR — 401 olursa kullanıcıyı login'e at
+// backend 401 dönerse token geçersiz demektir
+// kullanıcıyı login sayfasına atıyoruz
 api.interceptors.response.use(
   (response) => response,
   (error) => {

@@ -4,6 +4,7 @@ import { useAuth } from '../../context/useAuth'
 import styles from './Register.module.css'
 
 function Register() {
+  // form alanlarının state'leri
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -14,6 +15,7 @@ function Register() {
   const { register } = useAuth()
   const navigate = useNavigate()
 
+  // form doğrulamaları
   const validate = () => {
     if (!username || !email || !password || !passwordConfirm) {
       return 'Lütfen tüm alanları doldurun.'
@@ -33,10 +35,12 @@ function Register() {
     return null
   }
 
+  // form gönderildiğinde
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
 
+    // önce kontrolleri yap
     const validationError = validate()
     if (validationError) {
       setError(validationError)
@@ -46,7 +50,8 @@ function Register() {
     setSubmitting(true)
     try {
       await register({ username, email, password })
-      // Kayıt başarılı → e-posta doğrulama sayfasına yönlendir
+      // kayıt başarılı, e-posta doğrulama sayfasına git
+      // e-postayı state ile taşıyoruz (orada gösterilsin diye)
       navigate('/verify-email', { state: { email } })
     } catch (err) {
       const message =

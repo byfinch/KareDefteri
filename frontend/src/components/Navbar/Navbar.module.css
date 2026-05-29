@@ -72,6 +72,22 @@
   background: rgba(236, 72, 153, 0.08);
 }
 
+.adminLink {
+  color: var(--color-secondary);
+  font-weight: 600;
+}
+
+.adminLink:hover {
+  background: rgba(168, 85, 247, 0.08);
+  color: var(--color-secondary);
+}
+
+.adminActive {
+  color: var(--color-secondary);
+  background: rgba(168, 85, 247, 0.1);
+  font-weight: 600;
+}
+
 .logoutButton {
   margin-left: var(--space-xs);
   padding: 0.5rem 0.875rem;
